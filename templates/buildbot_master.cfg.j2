@@ -225,18 +225,16 @@ anaconda_builder.addStep(steps.Git(
     mode='full',
     shallow=True,
     haltOnFailure=True))
-{% if 'github.com' in science_build_rules_repository -%}
-anaconda_builder.addStep(steps.GitHub(
-{% else -%}
-anaconda_builder.addStep(steps.Git(
-{% endif -%}
-    name='Build Rules Sync',
-    repourl=rules_repo,
-    mode='full',
-    shallow=True,
-    submodules=False,
-    alwaysUseLatest=True,
-    haltOnFailure=True))
+anaconda_builder.addStep(steps.ShellCommand(
+    name='Build rules sync',
+    command=[
+        "git",
+        "submodule",
+        "add",
+        "--force",
+        rules_repo,
+        "rules",
+    ]))
 anaconda_builder.addStep(
     steps.ShellCommand(
         name='AnacondaDescribe - {{ worker.name }}',
@@ -247,6 +245,7 @@ anaconda_builder.addStep(
         interruptSignal='TERM',
         sigtermTime=30,
         usePTY=True,
+        workdir='/build/anaconda/build/rules',
         timeout=buildbot_timeout,
         haltOnFailure=True))
 anaconda_builder.addStep(
@@ -259,6 +258,7 @@ anaconda_builder.addStep(
         interruptSignal='TERM',
         sigtermTime=30,
         usePTY=True,
+        workdir='/build/anaconda/build/rules',
         timeout=buildbot_timeout))
 c['builders'].append(
     util.BuilderConfig(
@@ -283,18 +283,16 @@ singularity_builder.addStep(steps.Git(
     mode='full',
     shallow=True,
     haltOnFailure=True))
-{% if 'github.com' in science_build_configs_repository -%}
-singularity_builder.addStep(steps.GitHub(
-{% else -%}
-singularity_builder.addStep(steps.Git(
-{% endif -%}
-    name='Build Rules Sync',
-    repourl=rules_repo,
-    mode='full',
-    shallow=True,
-    submodules=False,
-    alwaysUseLatest=True,
-    haltOnFailure=True))
+singularity_builder.addStep(steps.ShellCommand(
+    name='Build rules sync',
+    command=[
+        "git",
+        "submodule",
+        "add",
+        "--force",
+        rules_repo,
+        "rules",
+    ]))
 singularity_builder.addStep(
     steps.ShellCommand(
         name='SingularityDescribe - {{ worker.name }}',
@@ -305,6 +303,7 @@ singularity_builder.addStep(
         interruptSignal='TERM',
         sigtermTime=30,
         usePTY=True,
+        workdir='/build/singularity/build/rules',
         timeout=buildbot_timeout))
 singularity_builder.addStep(
     steps.ShellCommand(
@@ -316,6 +315,7 @@ singularity_builder.addStep(
         interruptSignal='TERM',
         sigtermTime=30,
         usePTY=True,
+        workdir='/build/singularity/build/rules',
         timeout=buildbot_timeout))
 c['builders'].append(
     util.BuilderConfig(
@@ -340,35 +340,26 @@ spack_builder.addStep(steps.Git(
     mode='full',
     shallow=True,
     haltOnFailure=True))
-{% if 'github.com' in science_build_rules_repository -%}
-spack_builder.addStep(steps.GitHub(
-{% else -%}
-spack_builder.addStep(steps.Git(
-{% endif -%}
-    name='Build Rules Sync',
-    repourl=rules_repo,
-    mode='full',
-    shallow=True,
-    submodules=False,
-    alwaysUseLatest=True,
-    haltOnFailure=True))
+spack_builder.addStep(steps.ShellCommand(
+    name='Build rules sync',
+    command=[
+        "git",
+        "submodule",
+        "add",
+        "--force",
+        rules_repo,
+        "rules",
+    ]))
 spack_builder.addStep(steps.ShellCommand(
     name='Check Spack submodule url',
     command=[
         "git",
-        "config",
-        "--file=.gitmodules",
-        "submodule.spack.url",
-        "{{ (worker.spack | default({}))['url'] | default('https://github.com/spack/spack.git') }}",
-    ]))
-spack_builder.addStep(steps.ShellCommand(
-    name='Check Spack submodule branch',
-    command=[
-        "git",
-        "config",
-        "--file=.gitmodules",
-        "submodule.spack.branch",
+        "submodule",
+        "add",
+        "--force",
+        "-b",
         "{{ (worker.spack | default({}))['branch'] | default('develop') }}",
+        "{{ (worker.spack | default({}))['url'] | default('https://github.com/spack/spack.git') }}",
     ]))
 {% if 'license_repo' in builds.spack %}
 spack_builder.addStep(steps.ShellCommand(
@@ -421,6 +412,7 @@ spack_builder.addStep(
         interruptSignal='TERM',
         sigtermTime=30,
         usePTY=True,
+        workdir='rules',
         timeout=buildbot_timeout,
 {%- endif %}
 spack_builder.addStep(
@@ -433,6 +425,7 @@ spack_builder.addStep(
         interruptSignal='TERM',
         sigtermTime=30,
         usePTY=True,
+        workdir='/build/spack/build/rules',
         timeout=buildbot_timeout,
         haltOnFailure=True))
 spack_builder.addStep(
@@ -445,6 +438,7 @@ spack_builder.addStep(
         interruptSignal='TERM',
         sigtermTime=30,
         usePTY=True,
+        workdir='/build/spack/build/rules',
         timeout=buildbot_timeout))
 c['builders'].append(
     util.BuilderConfig(
