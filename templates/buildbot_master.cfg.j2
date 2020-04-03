@@ -226,7 +226,7 @@ anaconda_builder.addStep(steps.Git(
     shallow=True,
     haltOnFailure=True))
 anaconda_builder.addStep(steps.ShellCommand(
-    name='Build rules sync',
+    name='Adding buildrules as submodule',
     command=[
         "git",
         "submodule",
@@ -234,6 +234,24 @@ anaconda_builder.addStep(steps.ShellCommand(
         "--force",
         rules_repo,
         "rules",
+    ]))
+anaconda_builder.addStep(steps.ShellCommand(
+    name='Submodule sync',
+    command=[
+        "git",
+        "submodule",
+        "sync",
+    ]))
+anaconda_builder.addStep(steps.ShellCommand(
+    name='Submodule update',
+    command=['git',
+            'submodule',
+            'update',
+            '--init',
+            '--recursive',
+            '--force',
+            '--checkout',
+            '--remote',
     ]))
 anaconda_builder.addStep(
     steps.ShellCommand(
@@ -284,7 +302,7 @@ singularity_builder.addStep(steps.Git(
     shallow=True,
     haltOnFailure=True))
 singularity_builder.addStep(steps.ShellCommand(
-    name='Build rules sync',
+    name='Adding buildrules as submodule',
     command=[
         "git",
         "submodule",
@@ -292,6 +310,24 @@ singularity_builder.addStep(steps.ShellCommand(
         "--force",
         rules_repo,
         "rules",
+    ]))
+singularity_builder.addStep(steps.ShellCommand(
+    name='Submodule sync',
+    command=[
+        "git",
+        "submodule",
+        "sync",
+    ]))
+singularity_builder.addStep(steps.ShellCommand(
+    name='Submodule update',
+    command=['git',
+            'submodule',
+            'update',
+            '--init',
+            '--recursive',
+            '--force',
+            '--checkout',
+            '--remote',
     ]))
 singularity_builder.addStep(
     steps.ShellCommand(
@@ -341,7 +377,7 @@ spack_builder.addStep(steps.Git(
     shallow=True,
     haltOnFailure=True))
 spack_builder.addStep(steps.ShellCommand(
-    name='Build rules sync',
+    name='Adding buildrules as submodule',
     command=[
         "git",
         "submodule",
