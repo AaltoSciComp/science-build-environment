@@ -4,7 +4,7 @@ set -euo pipefail
 
 COMMAND=$1
 TARGET=${WORKERNAME#"worker_"}
-CONF_DIR=$(pwd)/configs/$TARGET/singularity
+CONF_DIR=/build/spack/build/configs/$TARGET/singularity
 
 [[ -f /usr/share/lmod/lmod/init/bash ]] && . /usr/share/lmod/lmod/init/bash
 
